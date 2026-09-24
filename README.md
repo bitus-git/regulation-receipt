@@ -4,16 +4,6 @@ A Consumer Choice Center tool that shows what state and local government adds to
 
 **Status:** draft prototype for internal review. Not for publication until data review is complete.
 
-## Run it
-
-It's a single self-contained file. Open `index.html` in a browser, or publish it with GitHub Pages:
-
-1. Push this folder to a repository.
-2. Go to **Settings → Pages**, set the source to the `main` branch, root folder.
-3. The site will be live at `https://<your-username>.github.io/<repo-name>/`.
-
-Sharing works best from the Pages URL: "Post on X" links back to the page, and "Share to Instagram" opens the phone's share sheet with a 1080×1920 receipt image (on desktop it downloads the image instead).
-
 ## Data
 
 All rates are embedded in `index.html` (the `DATA` array). Sources:
