@@ -34,14 +34,24 @@ h1{font-family:Anton,Impact,"Arial Narrow",sans-serif;font-weight:400;font-size:
 .field>label,.legend{display:block;font-weight:700;font-size:15px;margin-bottom:10px}
 select{width:100%;max-width:420px;font:600 17px Montserrat,sans-serif;color:var(--paper-ink);background:var(--paper);border:0;border-radius:4px;padding:14px 44px 14px 16px;appearance:none;
   background-image:linear-gradient(45deg,transparent 50%,var(--leila) 50%),linear-gradient(135deg,var(--leila) 50%,transparent 50%);background-position:calc(100% - 22px) 52%,calc(100% - 16px) 52%;background-size:6px 6px;background-repeat:no-repeat;cursor:pointer}
-.items{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;max-width:620px;margin:0;padding:0;border:0}
-.item{position:relative}
-.item input{position:absolute;opacity:0;width:1px;height:1px}
-.item label{display:block;padding:12px 14px;border:2px solid var(--line);border-radius:4px;cursor:pointer;font-weight:600;font-size:15px;line-height:1.3;transition:background .15s,border-color .15s}
-.item label small{display:block;font-weight:500;font-size:13px;color:var(--muted-on-bg);margin-top:2px}
-.item input:checked+label{background:var(--orange);border-color:var(--orange);color:#fff}
-.item input:checked+label small{color:#FFF7EF}
-.item input:focus-visible+label{outline:3px solid var(--warm);outline-offset:2px}
+.items{margin:0;padding:0;border:0;max-width:620px}
+.row-item{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"label val" "range range" "tax tax";column-gap:12px;padding:14px 0;border-top:1px solid var(--line)}
+.row-item:first-of-type{border-top:0}
+.ri-label{grid-area:label;font-weight:700;font-size:16px;white-space:nowrap}
+.ri-val{grid-area:val;font-family:"DM Mono",ui-monospace,monospace;font-weight:500;font-size:16px;color:var(--warm)}
+.ri-tax{grid-area:tax;font-size:13px;color:var(--muted-on-bg);margin-top:4px}
+input[type=range]{grid-area:range;-webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent;margin:6px 0 0;cursor:pointer;--p:50%}
+input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:linear-gradient(to right,var(--orange) var(--p),rgba(255,247,239,.18) var(--p))}
+input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:rgba(255,247,239,.18)}
+input[type=range]::-moz-range-progress{height:6px;border-radius:3px;background:var(--orange)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--warm);border:3px solid var(--orange);margin-top:-8px}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--warm);border:3px solid var(--orange)}
+input[type=range]:focus-visible{outline:none}
+input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(233,92,31,.45)}
+input[type=range]:focus-visible::-moz-range-thumb{box-shadow:0 0 0 4px rgba(233,92,31,.45)}
+.ri-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:12px;border-top:1px solid var(--line);font-size:14px;color:var(--muted-on-bg)}
+.ri-foot button{color:var(--warm)}
+@media (min-width:901px){.row-item{grid-template-columns:190px minmax(0,1fr) 116px;grid-template-areas:"label range val" ". tax tax";align-items:center}.ri-val{text-align:right}.ri-tax{margin-top:0}input[type=range]{margin:0}}
 .compare{margin-top:40px;padding-top:28px;border-top:1px solid var(--line);max-width:620px}
 .compare p{margin:14px 0 0;font-size:18px}
 .compare strong{color:var(--orange)}
@@ -123,7 +133,7 @@ footer b{color:var(--ink-on-bg)}
   <div class="grid">
     <div>
       <h1>Your state just rang you up.</h1>
-      <p class="deck">Pick a city and fill a normal month's basket. The receipt shows what state and local government adds before you get to the door.</p>
+      <p class="deck">Pick a city, then set your month. We've pre-set a typical family of four; drag each line to match what you actually spend.</p>
 
       <div class="field">
         <label for="city">Your city</label>
@@ -163,7 +173,7 @@ footer b{color:var(--ink-on-bg)}
 
   <section class="sources" aria-labelledby="sh">
     <h2 id="sh">Where every cent comes from</h2>
-    <p>Each line uses a published statutory rate applied to a stated basket. Nothing is modeled. The basket amounts are round, typical figures chosen for comparison, and they are the same in every city.</p>
+    <p>Each line uses a published statutory rate applied to the basket you set. Nothing is modeled.</p>
     <ul>
       <li>City combined sales tax rates: Avalara city rate pages, minimum combined 2026 rate for each state's largest city, retrieved September 24, 2026. New York City is 8.875% per the New York State Department of Taxation and Finance, because Avalara's minimum rate leaves out the 0.375% Metropolitan Commuter Transportation District tax.</li>
       <li>State sales tax rates: Tax Foundation, <a href="https://taxfoundation.org/data/all/state/2026-sales-tax-rates-midyear/">State and Local Sales Tax Rates, Midyear 2026</a> (as of July 1, 2026).</li>
@@ -172,7 +182,10 @@ footer b{color:var(--ink-on-bg)}
       <li>Beer: Tax Foundation, <a href="https://taxfoundation.org/data/all/state/beer-taxes-by-state/">Beer Taxes by State, 2026</a> (January 1, 2026). A six-pack of 12 oz cans is 0.5625 gallons. Federal beer excise is not included.</li>
       <li>Cigarettes: Tax Foundation, <a href="https://taxfoundation.org/data/all/state/cigarette-taxes-state/">Cigarette Taxes by State, 2026</a> (July 2026). Federal $1.01 per pack. Local cigarette taxes (Chicago and Cook County $4.18 combined, New York City $1.50, Philadelphia $2.00) from Campaign for Tobacco-Free Kids, December 2025.</li>
       <li>Vaping: Tax Foundation, <a href="https://taxfoundation.org/data/all/state/vaping-taxes/">Vaping Taxes by State, 2026</a>, tax charged on its sample 4-pack of 1.8 mL cartridges.</li>
-      <li>Clothing: taxed at the city's combined sales tax rate, except in the seven states that exempt everyday clothing. Minnesota, New Jersey, Pennsylvania and Vermont exempt it fully; Massachusetts ($175), New York ($110, including New York City's local tax) and Rhode Island ($250) exempt items under a per-item cap, and the basket assumes items under those caps. Sales tax holidays are not counted.</li>
+      <li>Starting basket: one month for a family of four, which people can then adjust to their own spending. Groceries use the low end of the $1,013 to $1,668 monthly range for a family of four; household goods $300; clothing $200 with every piece under $100; wireless service $100; food delivery $60. The ranking always compares the visitor's basket across all 50 cities.</li>
+      <li>Food delivery: the city's combined sales tax on the food, or New Hampshire's 8.5% Meals and Rentals Tax. Separate local restaurant or meals taxes and taxes on delivery fees are not yet included.</li>
+      <li>Phone plans: the wireless rate applies to mobile service only. Home internet is exempt from state and local taxes under the federal Internet Tax Freedom Act.</li>
+      <li>Clothing: taxed at the city's combined sales tax rate, except in the seven states that exempt everyday clothing. Minnesota, New Jersey, Pennsylvania and Vermont exempt it fully; Massachusetts ($175), New York ($110, including New York City's local tax) and Rhode Island ($250) exempt items under a per-item cap, and every piece in the basket is under $100, so it falls under all three caps. Sales tax holidays are not counted.</li>
       <li>Groceries: state grocery rates reflect 2026 law (Illinois and Arkansas ended state grocery taxes January 1, 2026; Mississippi 5%; Missouri 1.225%; Tennessee 4%; Alabama 2%). Cities marked ◇ may add a local grocery tax that is not yet included.</li>
     </ul>
     <p>Excise lines count the excise only, not the general sales tax also charged on beer, cigarettes and vapes, so vice totals are understated rather than overstated.</p>
@@ -184,33 +197,37 @@ footer b{color:var(--ink-on-bg)}
 <script>
 const DATA = [{"state": "Alabama", "abbr": "AL", "city": "Huntsville", "salesCity": 9.0, "salesState": 4.0, "gas": 0.31, "cig": 0.68, "cigLocal": 0, "beer": 0.53, "vape": 0.0, "wireless": 12.68, "grocery": 2, "groceryFlag": true}, {"state": "Alaska", "abbr": "AK", "city": "Anchorage", "salesCity": 0.0, "salesState": 0.0, "gas": 0.0895, "cig": 2.0, "cigLocal": 0, "beer": 1.07, "vape": 0.0, "wireless": 14.67, "grocery": 0, "groceryFlag": false}, {"state": "Arizona", "abbr": "AZ", "city": "Phoenix", "salesCity": 9.1, "salesState": 5.6, "gas": 0.19, "cig": 2.0, "cigLocal": 0, "beer": 0.16, "vape": 0.0, "wireless": 12.7, "grocery": 0, "groceryFlag": true}, {"state": "Arkansas", "abbr": "AR", "city": "Little Rock", "salesCity": 8.625, "salesState": 6.5, "gas": 0.25, "cig": 1.15, "cigLocal": 0, "beer": 0.37, "vape": 0.0, "wireless": 20.64, "grocery": 0, "groceryFlag": true}, {"state": "California", "abbr": "CA", "city": "Los Angeles", "salesCity": 9.75, "salesState": 7.25, "gas": 0.7364, "cig": 2.87, "cigLocal": 0, "beer": 0.2, "vape": 15.18, "wireless": 12.86, "grocery": 0, "groceryFlag": false}, {"state": "Colorado", "abbr": "CO", "city": "Denver", "salesCity": 9.15, "salesState": 2.9, "gas": 0.3018, "cig": 2.24, "cigLocal": 0, "beer": 0.08, "vape": 10.55, "wireless": 14.73, "grocery": 0, "groceryFlag": true}, {"state": "Connecticut", "abbr": "CT", "city": "Bridgeport", "salesCity": 6.35, "salesState": 6.35, "gas": 0.25, "cig": 4.35, "cigLocal": 0, "beer": 0.19, "vape": 2.88, "wireless": 8.42, "grocery": 0, "groceryFlag": false}, {"state": "Delaware", "abbr": "DE", "city": "Wilmington", "salesCity": 0.0, "salesState": 0.0, "gas": 0.23, "cig": 2.1, "cigLocal": 0, "beer": 0.26, "vape": 0.36, "wireless": 8.66, "grocery": 0, "groceryFlag": false}, {"state": "Florida", "abbr": "FL", "city": "Jacksonville", "salesCity": 7.5, "salesState": 6.0, "gas": 0.401, "cig": 1.34, "cigLocal": 0, "beer": 0.48, "vape": 0.0, "wireless": 15.1, "grocery": 0, "groceryFlag": false}, {"state": "Georgia", "abbr": "GA", "city": "Atlanta", "salesCity": 8.9, "salesState": 4.0, "gas": 0.3405, "cig": 0.37, "cigLocal": 0, "beer": 0.48, "vape": 0.36, "wireless": 13.2, "grocery": 0, "groceryFlag": true}, {"state": "Hawaii", "abbr": "HI", "city": "Honolulu", "salesCity": 4.5, "salesState": 4.0, "gas": 0.185, "cig": 3.6, "cigLocal": 0, "beer": 0.93, "vape": 13.19, "wireless": 8.17, "grocery": 4.5, "groceryFlag": false}, {"state": "Idaho", "abbr": "ID", "city": "Boise", "salesCity": 6.0, "salesState": 6.0, "gas": 0.33, "cig": 0.57, "cigLocal": 0, "beer": 0.15, "vape": 0.0, "wireless": 3.46, "grocery": 6, "groceryFlag": false}, {"state": "Illinois", "abbr": "IL", "city": "Chicago", "salesCity": 10.5, "salesState": 6.25, "gas": 0.704, "cig": 2.98, "cigLocal": 4.18, "beer": 0.23, "vape": 8.48, "wireless": 24.96, "grocery": 0, "groceryFlag": true}, {"state": "Indiana", "abbr": "IN", "city": "Indianapolis", "salesCity": 7.0, "salesState": 7.0, "gas": 0.631, "cig": 3.0, "cigLocal": 0, "beer": 0.12, "vape": 5.65, "wireless": 11.26, "grocery": 0, "groceryFlag": false}, {"state": "Iowa", "abbr": "IA", "city": "Des Moines", "salesCity": 7.0, "salesState": 6.0, "gas": 0.3, "cig": 1.36, "cigLocal": 0, "beer": 0.19, "vape": 0.0, "wireless": 10.09, "grocery": 0, "groceryFlag": false}, {"state": "Kansas", "abbr": "KS", "city": "Wichita", "salesCity": 7.5, "salesState": 6.5, "gas": 0.2503, "cig": 1.29, "cigLocal": 0, "beer": 0.18, "vape": 0.36, "wireless": 18.77, "grocery": 0, "groceryFlag": true}, {"state": "Kentucky", "abbr": "KY", "city": "Louisville", "salesCity": 6.0, "salesState": 6.0, "gas": 0.264, "cig": 1.1, "cigLocal": 0, "beer": 0.89, "vape": 6.0, "wireless": 11.74, "grocery": 0, "groceryFlag": false}, {"state": "Louisiana", "abbr": "LA", "city": "New Orleans", "salesCity": 10.0, "salesState": 5.0, "gas": 0.2093, "cig": 1.08, "cigLocal": 0, "beer": 0.4, "vape": 1.08, "wireless": 18.54, "grocery": 0, "groceryFlag": true}, {"state": "Maine", "abbr": "ME", "city": "Portland", "salesCity": 5.5, "salesState": 5.5, "gas": 0.3145, "cig": 3.5, "cigLocal": 0, "beer": 0.35, "vape": 14.13, "wireless": 9.3, "grocery": 0, "groceryFlag": false}, {"state": "Maryland", "abbr": "MD", "city": "Baltimore", "salesCity": 6.0, "salesState": 6.0, "gas": 0.4681, "cig": 5.0, "cigLocal": 0, "beer": 0.6, "vape": 15.43, "wireless": 17.14, "grocery": 0, "groceryFlag": false}, {"state": "Massachusetts", "abbr": "MA", "city": "Boston", "salesCity": 6.25, "salesState": 6.25, "gas": 0.2756, "cig": 3.51, "cigLocal": 0, "beer": 0.11, "vape": 14.13, "wireless": 10.75, "grocery": 0, "groceryFlag": false}, {"state": "Michigan", "abbr": "MI", "city": "Detroit", "salesCity": 6.0, "salesState": 6.0, "gas": 0.534, "cig": 2.0, "cigLocal": 0, "beer": 0.2, "vape": 0.0, "wireless": 10.08, "grocery": 0, "groceryFlag": false}, {"state": "Minnesota", "abbr": "MN", "city": "Minneapolis", "salesCity": 9.025, "salesState": 6.875, "gas": 0.327, "cig": 3.88, "cigLocal": 0, "beer": 0.47, "vape": 17.9, "wireless": 12.33, "grocery": 0, "groceryFlag": false}, {"state": "Mississippi", "abbr": "MS", "city": "Jackson", "salesCity": 8.0, "salesState": 7.0, "gas": 0.244, "cig": 0.68, "cigLocal": 0, "beer": 0.43, "vape": 0.0, "wireless": 13.15, "grocery": 5, "groceryFlag": true}, {"state": "Missouri", "abbr": "MO", "city": "Kansas City", "salesCity": 8.975, "salesState": 4.225, "gas": 0.2999, "cig": 0.17, "cigLocal": 0, "beer": 0.06, "vape": 0.0, "wireless": 14.92, "grocery": 1.225, "groceryFlag": true}, {"state": "Montana", "abbr": "MT", "city": "Billings", "salesCity": 0.0, "salesState": 0.0, "gas": 0.3375, "cig": 1.7, "cigLocal": 0, "beer": 0.14, "vape": 0.0, "wireless": 7.05, "grocery": 0, "groceryFlag": false}, {"state": "Nebraska", "abbr": "NE", "city": "Omaha", "salesCity": 7.0, "salesState": 5.5, "gas": 0.327, "cig": 0.64, "cigLocal": 0, "beer": 0.31, "vape": 0.36, "wireless": 18.29, "grocery": 0, "groceryFlag": false}, {"state": "Nevada", "abbr": "NV", "city": "Las Vegas", "salesCity": 8.375, "salesState": 6.85, "gas": 0.2481, "cig": 1.8, "cigLocal": 0, "beer": 0.16, "vape": 5.65, "wireless": 5.57, "grocery": 0, "groceryFlag": false}, {"state": "New Hampshire", "abbr": "NH", "city": "Manchester", "salesCity": 0.0, "salesState": 0.0, "gas": 0.2375, "cig": 1.78, "cigLocal": 0, "beer": 0.3, "vape": 2.16, "wireless": 10.0, "grocery": 0, "groceryFlag": false}, {"state": "New Jersey", "abbr": "NJ", "city": "Newark", "salesCity": 6.625, "salesState": 6.625, "gas": 0.4915, "cig": 3.0, "cigLocal": 0, "beer": 0.12, "vape": 2.16, "wireless": 9.32, "grocery": 0, "groceryFlag": false}, {"state": "New Mexico", "abbr": "NM", "city": "Albuquerque", "salesCity": 7.625, "salesState": 4.875, "gas": 0.1888, "cig": 2.0, "cigLocal": 0, "beer": 0.41, "vape": 2.0, "wireless": 14.32, "grocery": 0, "groceryFlag": false}, {"state": "New York", "abbr": "NY", "city": "New York City", "salesCity": 8.875, "salesState": 4.0, "gas": 0.2418, "cig": 5.35, "cigLocal": 1.5, "beer": 0.14, "vape": 5.14, "wireless": 20.61, "grocery": 0, "groceryFlag": false}, {"state": "North Carolina", "abbr": "NC", "city": "Charlotte", "salesCity": 8.25, "salesState": 4.75, "gas": 0.4125, "cig": 0.45, "cigLocal": 0, "beer": 0.62, "vape": 0.36, "wireless": 9.13, "grocery": 0, "groceryFlag": true}, {"state": "North Dakota", "abbr": "ND", "city": "Fargo", "salesCity": 7.75, "salesState": 5.0, "gas": 0.2303, "cig": 0.44, "cigLocal": 0, "beer": 0.43, "vape": 0.0, "wireless": 16.46, "grocery": 0, "groceryFlag": false}, {"state": "Ohio", "abbr": "OH", "city": "Columbus", "salesCity": 8.0, "salesState": 5.75, "gas": 0.385, "cig": 1.6, "cigLocal": 0, "beer": 0.18, "vape": 0.72, "wireless": 9.2, "grocery": 0, "groceryFlag": false}, {"state": "Oklahoma", "abbr": "OK", "city": "Oklahoma City", "salesCity": 8.625, "salesState": 4.5, "gas": 0.2, "cig": 2.03, "cigLocal": 0, "beer": 0.4, "vape": 0.0, "wireless": 17.2, "grocery": 0, "groceryFlag": true}, {"state": "Oregon", "abbr": "OR", "city": "Portland", "salesCity": 0.0, "salesState": 0.0, "gas": 0.4, "cig": 3.33, "cigLocal": 0, "beer": 0.08, "vape": 12.25, "wireless": 9.17, "grocery": 0, "groceryFlag": false}, {"state": "Pennsylvania", "abbr": "PA", "city": "Philadelphia", "salesCity": 8.0, "salesState": 6.0, "gas": 0.587, "cig": 2.6, "cigLocal": 2.0, "beer": 0.08, "vape": 7.54, "wireless": 17.85, "grocery": 0, "groceryFlag": false}, {"state": "Rhode Island", "abbr": "RI", "city": "Providence", "salesCity": 7.0, "salesState": 7.0, "gas": 0.4112, "cig": 4.5, "cigLocal": 0, "beer": 0.12, "vape": 3.6, "wireless": 15.75, "grocery": 0, "groceryFlag": false}, {"state": "South Carolina", "abbr": "SC", "city": "Charleston", "salesCity": 9.0, "salesState": 6.0, "gas": 0.2875, "cig": 0.57, "cigLocal": 0, "beer": 0.77, "vape": 0.0, "wireless": 13.61, "grocery": 0, "groceryFlag": true}, {"state": "South Dakota", "abbr": "SD", "city": "Sioux Falls", "salesCity": 6.2, "salesState": 4.2, "gas": 0.3, "cig": 1.53, "cigLocal": 0, "beer": 0.27, "vape": 0.0, "wireless": 16.74, "grocery": 4.2, "groceryFlag": true}, {"state": "Tennessee", "abbr": "TN", "city": "Nashville", "salesCity": 9.75, "salesState": 7.0, "gas": 0.274, "cig": 0.62, "cigLocal": 0, "beer": 1.29, "vape": 1.88, "wireless": 14.0, "grocery": 4, "groceryFlag": true}, {"state": "Texas", "abbr": "TX", "city": "Houston", "salesCity": 8.25, "salesState": 6.25, "gas": 0.2, "cig": 1.41, "cigLocal": 0, "beer": 0.19, "vape": 0.0, "wireless": 17.48, "grocery": 0, "groceryFlag": false}, {"state": "Utah", "abbr": "UT", "city": "Salt Lake City", "salesCity": 8.45, "salesState": 6.1, "gas": 0.3255, "cig": 2.2, "cigLocal": 0, "beer": 0.44, "vape": 10.55, "wireless": 18.13, "grocery": 3, "groceryFlag": false}, {"state": "Vermont", "abbr": "VT", "city": "Burlington", "salesCity": 7.0, "salesState": 6.0, "gas": 0.3488, "cig": 3.08, "cigLocal": 0, "beer": 0.27, "vape": 17.33, "wireless": 9.16, "grocery": 0, "groceryFlag": false}, {"state": "Virginia", "abbr": "VA", "city": "Virginia Beach", "salesCity": 6.0, "salesState": 5.3, "gas": 0.424, "cig": 0.6, "cigLocal": 0, "beer": 0.26, "vape": 0.79, "wireless": 7.82, "grocery": 1, "groceryFlag": false}, {"state": "Washington", "abbr": "WA", "city": "Seattle", "salesCity": 10.55, "salesState": 6.5, "gas": 0.6017, "cig": 3.03, "cigLocal": 0, "beer": 0.26, "vape": 17.9, "wireless": 21.62, "grocery": 0, "groceryFlag": false}, {"state": "West Virginia", "abbr": "WV", "city": "Charleston", "salesCity": 7.0, "salesState": 6.0, "gas": 0.357, "cig": 1.2, "cigLocal": 0, "beer": 0.18, "vape": 0.54, "wireless": 13.13, "grocery": 0, "groceryFlag": false}, {"state": "Wisconsin", "abbr": "WI", "city": "Milwaukee", "salesCity": 5.9, "salesState": 5.0, "gas": 0.329, "cig": 2.52, "cigLocal": 0, "beer": 0.06, "vape": 0.36, "wireless": 9.29, "grocery": 0, "groceryFlag": false}, {"state": "Wyoming", "abbr": "WY", "city": "Cheyenne", "salesCity": 5.0, "salesState": 4.0, "gas": 0.24, "cig": 0.6, "cigLocal": 0, "beer": 0.02, "vape": 2.83, "wireless": 9.37, "grocery": 0, "groceryFlag": false}];
 const ITEMS = [
-  {id:"groceries",label:"Groceries",hint:"$400 of food for home",on:true},
-  {id:"goods",label:"Household goods",hint:"$200 of everyday stuff",on:true},
-  {id:"clothes",label:"Clothes",hint:"$100, items under $110 each",on:true},
-  {id:"gas",label:"Gasoline",hint:"40 gallons, about a normal month's driving",on:true},
-  {id:"phone",label:"Phone plan",hint:"$60 a month",on:true},
-  {id:"beer",label:"Beer",hint:"Two six-packs",on:true},
-  {id:"cig",label:"Cigarettes",hint:"A pack a week",on:false},
-  {id:"vape",label:"Vape pods",hint:"One 4-pack of pods",on:false},
+  {id:"groceries",label:"Groceries",def:1013,min:0,max:2500,step:1,fmt:v=>dollars(v)},
+  {id:"goods",label:"Household essentials",def:300,min:0,max:1000,step:10,fmt:v=>dollars(v)},
+  {id:"clothes",label:"Clothes",def:200,min:0,max:800,step:10,fmt:v=>dollars(v)},
+  {id:"delivery",label:"Food delivery",def:60,min:0,max:600,step:10,fmt:v=>dollars(v)},
+  {id:"gas",label:"Gasoline",def:40,min:0,max:200,step:5,fmt:v=>v+" gal"},
+  {id:"phone",label:"Wireless plans",def:100,min:0,max:400,step:5,fmt:v=>dollars(v)},
+  {id:"beer",label:"Beer",def:2,min:0,max:30,step:1,fmt:v=>v+(v===1?" six-pack":" six-packs")},
+  {id:"cig",label:"Cigarettes",def:0,min:0,max:60,step:1,fmt:v=>v+(v===1?" pack":" packs")},
+  {id:"vape",label:"Vape pods",def:0,min:0,max:12,step:1,fmt:v=>v+(v===1?" 4-pack":" 4-packs")},
 ];
 const CLOTH_EXEMPT=new Set(["MA","MN","NJ","NY","PA","RI","VT"]);
-const GROC=400, GOODS=200, CLOTHES=100, GAL=40, PHONE=60, BEER_GAL=2*0.5625, PACKS=4;
 const FED_GAS=0.184, FED_USF=13.36, FED_CIG=1.01;
-const money = n => "$" + n.toFixed(2);
+const money = n => "$" + n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 const dollars = n => "$" + Math.round(n).toLocaleString("en-US");
 const pct = n => (Math.round(n*1000)/1000).toString() + "%";
-const sel = new Set(ITEMS.filter(i=>i.on).map(i=>i.id));
+const amt = Object.fromEntries(ITEMS.map(i=>[i.id,i.def]));
 
 function calc(d){
-  const lines=[]; let sl=0, fed=0;
-  if(sel.has("groceries")){const t=GROC*d.grocery/100; sl+=t; lines.push({head:"Groceries",price:GROC,taxes:[{l:d.grocery>0?`Grocery tax ${pct(d.grocery)}`:"Grocery tax, exempt",v:t,flag:d.groceryFlag}]});}
-  if(sel.has("goods")){const t=GOODS*d.salesCity/100; sl+=t; lines.push({head:"Household goods",price:GOODS,taxes:[{l:`Sales tax ${pct(d.salesCity)}`,v:t}]});}
-  if(sel.has("clothes")){const ex=CLOTH_EXEMPT.has(d.abbr), t=ex?0:CLOTHES*d.salesCity/100; sl+=t; lines.push({head:"Clothes",price:CLOTHES,taxes:[{l:ex?"Sales tax, clothing exempt":`Sales tax ${pct(d.salesCity)}`,v:t}]});}
-  if(sel.has("gas")){const t=GAL*d.gas; sl+=t; fed+=GAL*FED_GAS; lines.push({head:`Gasoline, ${GAL} gal`,taxes:[{l:`State gas tax ${(d.gas*100).toFixed(1)}¢/gal`,v:t}]});}
-  if(sel.has("phone")){const t=PHONE*d.wireless/100; sl+=t; fed+=PHONE*FED_USF/100; lines.push({head:"Phone plan",price:PHONE,taxes:[{l:`State & local fees ${pct(d.wireless)}`,v:t}]});}
-  if(sel.has("beer")){const t=BEER_GAL*d.beer; sl+=t; lines.push({head:"Beer, 2 six-packs",taxes:[{l:"State beer excise",v:t}]});}
-  if(sel.has("cig")){const t=PACKS*d.cig; sl+=t; fed+=PACKS*FED_CIG; const tx=[{l:`State excise $${d.cig.toFixed(2)}/pack`,v:t}]; if(d.cigLocal){const lt=PACKS*d.cigLocal; sl+=lt; tx.push({l:"City/county cigarette tax",v:lt});} lines.push({head:`Cigarettes, ${PACKS} packs`,taxes:tx});}
-  if(sel.has("vape")){const t=d.vape; sl+=t; lines.push({head:"Vape pods, 4-pack",taxes:[{l:d.vape>0?"State vape tax":"State vape tax, none",v:t}]});}
+  const lines=[]; let sl=0, fed=0; const byItem={};
+  const add=(id,obj,tax)=>{lines.push(obj); byItem[id]=tax; sl+=tax;};
+  let v;
+  if((v=amt.groceries)>0){const t=v*d.grocery/100; add("groceries",{head:"Groceries",price:v,taxes:[{l:d.grocery>0?`Grocery tax ${pct(d.grocery)}`:"Grocery tax, exempt",v:t,flag:d.groceryFlag}]},t);}
+  if((v=amt.goods)>0){const t=v*d.salesCity/100; add("goods",{head:"Household essentials",price:v,taxes:[{l:`Sales tax ${pct(d.salesCity)}`,v:t}]},t);}
+  if((v=amt.clothes)>0){const ex=CLOTH_EXEMPT.has(d.abbr), t=ex?0:v*d.salesCity/100; add("clothes",{head:"Clothes",price:v,taxes:[{l:ex?"Sales tax, clothing exempt":`Sales tax ${pct(d.salesCity)}`,v:t}]},t);}
+  if((v=amt.delivery)>0){const nh=d.abbr==="NH", r=nh?8.5:d.salesCity, t=v*r/100; add("delivery",{head:"Food delivery",price:v,taxes:[{l:nh?"NH meals tax 8.5%":`Sales tax ${pct(r)}`,v:t}]},t);}
+  if((v=amt.gas)>0){const t=v*d.gas; fed+=v*FED_GAS; add("gas",{head:`Gasoline, ${v} gal`,taxes:[{l:`State gas tax ${(d.gas*100).toFixed(1)}¢/gal`,v:t}]},t);}
+  if((v=amt.phone)>0){const t=v*d.wireless/100; fed+=v*FED_USF/100; add("phone",{head:"Wireless plans",price:v,taxes:[{l:`State & local fees ${pct(d.wireless)}`,v:t}]},t);}
+  if((v=amt.beer)>0){const t=v*0.5625*d.beer; add("beer",{head:`Beer, ${v} six-pack${v>1?"s":""}`,taxes:[{l:"State beer excise",v:t}]},t);}
+  if((v=amt.cig)>0){const t=v*d.cig; fed+=v*FED_CIG; const tx=[{l:`State excise $${d.cig.toFixed(2)}/pack`,v:t}]; let tot=t; if(d.cigLocal){const lt=v*d.cigLocal; tot+=lt; tx.push({l:"City/county cigarette tax",v:lt});} add("cig",{head:`Cigarettes, ${v} pack${v>1?"s":""}`,taxes:tx},tot);}
+  if((v=amt.vape)>0){const t=v*d.vape; add("vape",{head:`Vape pods, ${v} 4-pack${v>1?"s":""}`,taxes:[{l:d.vape>0?"State vape tax":"State vape tax, none",v:t}]},t);}
+  lines.byItem=byItem;
   return {lines,sl,fed};
 }
 function ranked(){ return DATA.map(d=>({d,sl:calc(d).sl})).sort((a,b)=>b.sl-a.sl); }
@@ -221,8 +238,15 @@ const byName=[...DATA].sort((a,b)=>a.city.localeCompare(b.city));
 for(const el of [cityEl,city2El]) el.innerHTML = byName.map(d=>`<option value="${d.abbr}">${esc(d.city)}, ${d.abbr}</option>`).join("");
 cityEl.value="TN"; city2El.value="TX";
 const itemsEl=document.getElementById("items");
-itemsEl.insertAdjacentHTML("beforeend", ITEMS.map(i=>`<div class="item"><input type="checkbox" id="i-${i.id}" ${i.on?"checked":""}><label for="i-${i.id}">${i.label}<small>${i.hint}</small></label></div>`).join(""));
-ITEMS.forEach(i=>document.getElementById("i-"+i.id).addEventListener("change",e=>{e.target.checked?sel.add(i.id):sel.delete(i.id); render(true);}));
+itemsEl.insertAdjacentHTML("beforeend", ITEMS.map(i=>`<div class="row-item">
+  <label for="s-${i.id}" class="ri-label">${i.label}</label>
+  <output class="ri-val" id="v-${i.id}" for="s-${i.id}"></output>
+  <input type="range" id="s-${i.id}" min="${i.min}" max="${i.max}" step="${i.step}" value="${i.def}">
+  <span class="ri-tax" id="t-${i.id}"></span>
+</div>`).join("") + `<div class="ri-foot"><span>Typical family of four is pre-set. Drag to match your month.</span><button type="button" class="ghost" id="reset">Reset</button></div>`);
+function paintSlider(i){const el=document.getElementById("s-"+i.id);const p=(el.value-i.min)/(i.max-i.min)*100;el.style.setProperty("--p",p+"%");document.getElementById("v-"+i.id).textContent=i.fmt(+el.value);}
+ITEMS.forEach(i=>{const el=document.getElementById("s-"+i.id);paintSlider(i);el.addEventListener("input",()=>{amt[i.id]=+el.value;paintSlider(i);render(false);});});
+document.getElementById("reset").addEventListener("click",()=>{ITEMS.forEach(i=>{amt[i.id]=i.def;document.getElementById("s-"+i.id).value=i.def;paintSlider(i);});render(true);});
 cityEl.addEventListener("change",()=>render(true));
 city2El.addEventListener("change",()=>render(false));
 
@@ -231,7 +255,8 @@ function render(print){
   const pos=R.findIndex(x=>x.d.abbr===d.abbr)+1;
   const low=R[R.length-1], high=R[0];
   const anyFlag = r.lines.some(l=>l.taxes.some(t=>t.flag));
-  let h=`<p class="r-title">Regulation Receipt</p><p class="r-sub">${esc(d.city)}, ${esc(d.state)}</p><p class="r-meta">One month. State and local government only.</p><hr class="rule">`;
+  ITEMS.forEach(i=>{const tx=r.lines.byItem[i.id]; document.getElementById('t-'+i.id).textContent = amt[i.id]>0 ? `${money(tx||0)} tax` : 'Not in your month';});
+  let h=`<p class="r-title">Regulation Receipt</p><p class="r-sub">${esc(d.city)}, ${esc(d.state)}</p><p class="r-meta">One month. State and local only.</p><hr class="rule">`;
   if(!r.lines.length){h+=`<p>Your basket is empty. Pick at least one item to print a receipt.</p>`;}
   for(const l of r.lines){
     h+=`<div class="row item-head"><span class="l">${esc(l.head)}</span><span class="r">${l.price?money(l.price):""}</span></div>`;
@@ -281,37 +306,41 @@ function wrapLines(ctx,text,max){const w=text.split(" ");const out=[];let line="
 async function drawStory(){
   await document.fonts.ready;
   const {d,r,pos}=window._res;
-  const W=1080,H=1920,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
-  x.fillStyle="#22264E";x.fillRect(0,0,W,H);
-  x.fillStyle="#FFF7EF";x.font="72px Anton";x.textBaseline="alphabetic";
-  x.fillText("YOUR STATE JUST",90,190);x.fillText("RANG YOU UP.",90,275);
-  // paper
-  const px=110,pw=860,py=350; const rows=r.lines.reduce((n,l)=>n+1+l.taxes.length,0);
-  const ph=Math.min(1360,420+rows*52+400);
-  x.fillStyle="#FFF7EF";x.beginPath();x.moveTo(px,py);x.lineTo(px+pw,py);x.lineTo(px+pw,py+ph);
-  const tooth=20;for(let i=px+pw;i>px;i-=tooth){x.lineTo(i-tooth/2,py+ph+tooth/2);x.lineTo(i-tooth,py+ph);}x.closePath();x.fill();
-  const ink="#22264E",mut="#6F789B",L=px+56,R=px+pw-56;let y=py+100;
-  x.textAlign="center";x.fillStyle=ink;x.font="60px Anton";x.fillText("REGULATION RECEIPT",W/2,y);
-  y+=56;x.font="30px 'DM Mono'";x.fillText((d.city+", "+d.state).toUpperCase(),W/2,y);
-  y+=42;x.fillStyle=mut;x.font="24px 'DM Mono'";x.fillText("One month. State and local government only.",W/2,y);
+  const flag=r.lines.some(l=>l.taxes.some(q=>q.flag));
+  const pw=860, lh=46, P=56;
+  const rows=r.lines.reduce((n,l)=>n+1+l.taxes.length,0);
+  const ch=100+56+42+34+52 + rows*lh + r.lines.length*8 + 60 + 200 + 50 + 56 + (flag?48:0) + 70;
+  const pc=document.createElement("canvas");pc.width=pw;pc.height=ch+10;const x=pc.getContext("2d");
+  const tooth=20;x.fillStyle="#FFF7EF";x.beginPath();x.moveTo(0,0);x.lineTo(pw,0);x.lineTo(pw,ch);
+  for(let i=pw;i>0;i-=tooth){x.lineTo(i-tooth/2,ch+tooth/2);x.lineTo(i-tooth,ch);}x.closePath();x.fill();
+  const ink="#22264E",mut="#6F789B",L=P,R=pw-P,C=pw/2;let y=100;
+  x.textAlign="center";x.fillStyle=ink;x.font="60px Anton";x.fillText("REGULATION RECEIPT",C,y);
+  y+=56;x.font="30px 'DM Mono'";x.fillText((d.city+", "+d.state).toUpperCase(),C,y);
+  y+=42;x.fillStyle=mut;x.font="24px 'DM Mono'";x.fillText("One month. State and local only.",C,y);
   const dash=yy=>{x.strokeStyle=ink;x.globalAlpha=.5;x.setLineDash([10,8]);x.lineWidth=2;x.beginPath();x.moveTo(L,yy);x.lineTo(R,yy);x.stroke();x.setLineDash([]);x.globalAlpha=1;};
   y+=34;dash(y);y+=52;
   for(const l of r.lines){
     x.textAlign="left";x.fillStyle=ink;x.font="500 28px 'DM Mono'";x.fillText(l.head.toUpperCase(),L,y);
-    if(l.price){x.textAlign="right";x.fillText(money(l.price),R,y);} y+=46;
-    for(const tx of l.taxes){x.textAlign="left";x.fillStyle=mut;x.font="26px 'DM Mono'";x.fillText("  "+tx.l+(tx.flag?" ◇":""),L,y);x.textAlign="right";x.fillStyle=ink;x.fillText(money(tx.v),R,y);y+=46;}
+    if(l.price){x.textAlign="right";x.fillText(money(l.price),R,y);} y+=lh;
+    for(const tx of l.taxes){x.textAlign="left";x.fillStyle=mut;x.font="26px 'DM Mono'";x.fillText("  "+tx.l+(tx.flag?" ◇":""),L,y);x.textAlign="right";x.fillStyle=ink;x.fillText(money(tx.v),R,y);y+=lh;}
     y+=8;
   }
   dash(y);y+=60;
   x.textAlign="left";x.fillStyle=ink;x.font="500 34px 'DM Mono'";x.fillText("STATE & LOCAL CUT",L,y);x.textAlign="right";x.fillText(money(r.sl),R,y);
-  y+=200;x.textAlign="center";x.fillStyle="#E95C1F";x.font="150px Anton";x.fillText(dollars(r.sl*12),W/2,y);
-  y+=50;x.fillStyle=ink;x.font="26px 'DM Mono'";x.fillText("A YEAR TO STATE & LOCAL GOVERNMENT",W/2,y);
-  y+=56;x.font="500 32px 'DM Mono'";x.fillText(`#${pos} OF 50 (1 CHARGES MOST)`,W/2,y);
-  if(r.lines.some(l=>l.taxes.some(q=>q.flag))){y+=48;x.fillStyle=mut;x.font="22px 'DM Mono'";x.fillText("◇ Local grocery tax may apply and is not yet counted.",W/2,y);}
-  x.fillStyle="#FFF7EF";x.textAlign="left";x.font="600 34px Montserrat";
-  const fy=Math.max(y+170,py+ph+110);
-  x.fillText("What's on your receipt?",90,fy);
-  x.fillStyle="#E95C1F";x.font="700 34px Montserrat";x.fillText("consumerchoicecenter.org",90,fy+56);
+  y+=200;x.textAlign="center";x.fillStyle="#E95C1F";x.font="150px Anton";x.fillText(dollars(r.sl*12),C,y);
+  y+=50;x.fillStyle=ink;x.font="26px 'DM Mono'";x.fillText("A YEAR TO STATE & LOCAL GOVERNMENT",C,y);
+  y+=56;x.font="500 32px 'DM Mono'";x.fillText(`#${pos} OF 50 (1 CHARGES MOST)`,C,y);
+  if(flag){y+=48;x.fillStyle=mut;x.font="22px 'DM Mono'";x.fillText("◇ Local grocery tax may apply and is not yet counted.",C,y);}
+  // compose story
+  const W=1080,H=1920,c=document.createElement("canvas");c.width=W;c.height=H;const g=c.getContext("2d");
+  g.fillStyle="#22264E";g.fillRect(0,0,W,H);
+  g.fillStyle="#FFF7EF";g.font="72px Anton";g.textBaseline="alphabetic";
+  g.fillText("YOUR STATE JUST",90,190);g.fillText("RANG YOU UP.",90,275);
+  const top=340, maxH=H-top-230, s=Math.min(1,maxH/pc.height), dw=pw*s, dh=pc.height*s;
+  g.drawImage(pc,(W-dw)/2,top,dw,dh);
+  const fy=top+dh+100;
+  g.textAlign="left";g.fillStyle="#FFF7EF";g.font="600 34px Montserrat";g.fillText("What's on your receipt?",90,fy);
+  g.fillStyle="#E95C1F";g.font="700 34px Montserrat";g.fillText("consumerchoicecenter.org",90,fy+56);
   return new Promise(res=>c.toBlob(res,"image/png"));
 }
 document.getElementById("shareIG").addEventListener("click",async()=>{
